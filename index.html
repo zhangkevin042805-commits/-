@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wayfarer's Chronicle</title>
+  <style>
+    :root {
+      --bg: #0f0e11;
+      --panel: #1b171f;
+      --accent: #d2a73a;
+      --text: #e6e0d8;
+      --muted: #a2907a;
+      --danger: #f06a6a;
+      --success: #7dcf8d;
+      --border: #3a2f3f;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(210,167,58,0.07), transparent 35%),
+                  radial-gradient(circle at 80% 10%, rgba(125,207,141,0.07), transparent 30%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 16px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    h1 {
+      margin: 0 0 4px;
+      letter-spacing: 1px;
+      color: var(--accent);
+      text-shadow: 0 0 8px rgba(210,167,58,0.25);
+    }
+    .subhead {
+      color: var(--muted);
+      margin-top: 0;
+      font-size: 0.95rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 12px;
+    }
+    section {
+      background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2)), var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
+    h2 { margin-top: 0; color: var(--accent); font-size: 1.1rem; }
+    label { display: block; margin: 8px 0 4px; color: var(--muted); font-size: 0.95rem; }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #130f16;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      color: #0d0a0f;
+      font-weight: 600;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      border: none;
+      box-shadow: 0 3px 10px rgba(210,167,58,0.25);
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(210,167,58,0.35); }
+    button.secondary { background: #2b2430; color: var(--text); box-shadow: none; }
+    button.danger { background: var(--danger); color: #0f0a0f; }
+    .inline-row { display: flex; gap: 8px; align-items: center; }
+    .inline-row > * { flex: 1; }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; background: #241e28; color: var(--muted); font-size: 0.85rem; }
+    .log-area { background: #0c0a0f; min-height: 160px; white-space: pre-line; overflow-y: auto; padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
+    .small { font-size: 0.85rem; color: var(--muted); }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+    .stat { background: #231c26; padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
+    .stat label { margin: 0 0 4px; }
+    .stat input { width: 100%; }
+    .spacer { height: 8px; }
+    @media (max-width: 640px) { header { text-align: left; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Wayfarer's Chronicle</h1>
+    <p class="subhead">后勇者时代的旅途记录簿：离线可用，localStorage 持久化</p>
+  </header>
+
+  <div class="grid">
+    <section id="character">
+      <h2>角色卡</h2>
+      <label for="name">角色名</label>
+      <input id="name" type="text" placeholder="风霜旅者" />
+
+      <label for="origin">出身 / 阵营</label>
+      <select id="origin">
+        <option value="">选择立场</option>
+        <option>王国余烬</option>
+        <option>自由佣兵</option>
+        <option>古塔学派</option>
+        <option>山岭部族</option>
+        <option>流浪书巫</option>
+      </select>
+
+      <div class="cards">
+        <div class="stat"><label for="str">力</label><input id="str" type="number" value="0" /></div>
+        <div class="stat"><label for="dex">敏</label><input id="dex" type="number" value="0" /></div>
+        <div class="stat"><label for="int">智</label><input id="int" type="number" value="0" /></div>
+        <div class="stat"><label for="cha">魅</label><input id="cha" type="number" value="0" /></div>
+      </div>
+
+      <label for="talent1">特长 1</label>
+      <input id="talent1" type="text" placeholder="暗巷生存" />
+
+      <label for="talent2">特长 2</label>
+      <input id="talent2" type="text" placeholder="古语解读" />
+
+      <div class="inline-row">
+        <div>
+          <label for="stress">Stress (0-6)</label>
+          <input id="stress" type="number" min="0" max="6" value="0" />
+        </div>
+        <div>
+          <label for="spotlight">Spotlight (0+)</label>
+          <input id="spotlight" type="number" min="0" value="0" />
+        </div>
+      </div>
+
+      <label for="gear">装备</label>
+      <textarea id="gear" placeholder="风切短剑、余烬灯笼、旅路地图"></textarea>
+
+      <div class="inline-row">
+        <button id="saveCharacter">保存到 localStorage</button>
+        <button id="loadCharacter" class="secondary">载入</button>
+      </div>
+      <div class="inline-row" style="margin-top:6px;">
+        <button id="exportCharacter" class="secondary">导出为文本并复制</button>
+      </div>
+    </section>
+
+    <section id="dice">
+      <h2>掷骰 2d6 + 属性</h2>
+      <label for="attrSelect">选择属性</label>
+      <select id="attrSelect">
+        <option value="str">力</option>
+        <option value="dex">敏</option>
+        <option value="int">智</option>
+        <option value="cha">魅</option>
+      </select>
+
+      <label for="modifier">额外修正</label>
+      <input id="modifier" type="number" value="0" />
+
+      <div class="inline-row">
+        <button id="roll">掷骰</button>
+        <button id="reroll" class="secondary">花 1 Spotlight：重掷一颗</button>
+      </div>
+
+      <div class="spacer"></div>
+      <div id="diceResult" class="log-area small">等待掷骰...</div>
+    </section>
+
+    <section id="travel">
+      <h2>旅途 / 章节</h2>
+      <label for="chapter">章节标题</label>
+      <input id="chapter" type="text" placeholder="雾中渡口" />
+
+      <label for="weather">氛围 / 天气</label>
+      <select id="weather">
+        <option>晨雾微光</option>
+        <option>星落夜行</option>
+        <option>冷雨风暴</option>
+        <option>余烬黄昏</option>
+        <option>黑森林低语</option>
+      </select>
+
+      <label for="travelLog">旅途日志</label>
+      <textarea id="travelLog" placeholder="路边的石像似乎在注视我们，风里混着灰烬味。"></textarea>
+
+      <div class="inline-row">
+        <button id="generateEncounter">生成旅途碎片遭遇</button>
+        <button id="saveTravel" class="secondary">保存旅途</button>
+      </div>
+      <div class="inline-row" style="margin-top:6px;">
+        <button id="loadTravel" class="secondary">载入旅途</button>
+        <button id="exportTravel" class="secondary">导出文本并复制</button>
+      </div>
+    </section>
+
+    <section id="gm">
+      <h2>GM 面板</h2>
+      <div class="inline-row">
+        <div>
+          <label for="clock1">时钟 A (0-4)</label>
+          <input id="clock1" type="number" min="0" max="4" value="0" />
+          <div class="inline-row">
+            <button data-clock="clock1">推进 +1</button>
+            <button data-reset="clock1" class="secondary">重置</button>
+          </div>
+        </div>
+        <div>
+          <label for="clock2">时钟 B (0-4)</label>
+          <input id="clock2" type="number" min="0" max="4" value="0" />
+          <div class="inline-row">
+            <button data-clock="clock2">推进 +1</button>
+            <button data-reset="clock2" class="secondary">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <label for="gmNotes">GM 密记</label>
+      <textarea id="gmNotes" placeholder="秘密盟约、伏线、敌方资源..."></textarea>
+    </section>
+
+    <section id="logPanel" style="grid-column: 1 / -1;">
+      <h2>记录区</h2>
+      <div class="inline-row" style="margin-bottom:6px;">
+        <span class="pill">自动记录：掷骰、重掷、遭遇、时钟推进</span>
+        <button id="copyLog" class="secondary" style="max-width:180px;">一键复制记录</button>
+      </div>
+      <div id="log" class="log-area"></div>
+    </section>
+  </div>
+
+  <script>
+    const storageKeys = {
+      character: 'wc_character',
+      travel: 'wc_travel',
+      gm: 'wc_gm',
+      log: 'wc_log_history',
+      lastRoll: 'wc_last_roll'
+    };
+
+    const encounterPool = [
+      '废弃驿站的壁炉里仍有微弱蓝火，似乎有人刚离开。',
+      '乌鸦衔来残破的密信，上面盖着陌生骑士团的印记。',
+      '一队流民在森林边搭起火堆，口中低唱古旧的赞美诗。',
+      '商队护卫请你们帮忙驱赶围拢的暮光狼群。',
+      '古井旁的石碑出现新的刻痕，记录着与记忆魔法有关的符号。',
+      '夜空划过翠绿色的彗星，短暂照亮远处的断塔。',
+      '地平线升起灰烬风暴，前方村庄的钟声急促响起。',
+      '溪流里漂来半截木偶，背面写着“不要回头”。'
+    ];
+
+    const logArea = document.getElementById('log');
+
+    function timestamp() {
+      const now = new Date();
+      return now.toLocaleTimeString('en-GB', { hour12: false }) + ' ' + now.toLocaleDateString();
+    }
+
+    function appendLog(entry) {
+      const logs = getLogs();
+      const item = `[${timestamp()}] ${entry}`;
+      logs.push(item);
+      localStorage.setItem(storageKeys.log, JSON.stringify(logs));
+      renderLog(logs);
+    }
+
+    function getLogs() {
+      const raw = localStorage.getItem(storageKeys.log);
+      return raw ? JSON.parse(raw) : [];
+    }
+
+    function renderLog(logs = getLogs()) {
+      if (!logs.length) {
+        logArea.textContent = '等待记录...';
+        return;
+      }
+      logArea.textContent = logs.slice(-200).join('\n');
+      logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    function copyToClipboard(text, message) {
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        appendLog(message);
+      }).catch(() => alert('复制失败，请检查浏览器权限。'));
+    }
+
+    function saveCharacter() {
+      const data = {
+        name: document.getElementById('name').value.trim(),
+        origin: document.getElementById('origin').value,
+        str: Number(document.getElementById('str').value) || 0,
+        dex: Number(document.getElementById('dex').value) || 0,
+        int: Number(document.getElementById('int').value) || 0,
+        cha: Number(document.getElementById('cha').value) || 0,
+        talent1: document.getElementById('talent1').value.trim(),
+        talent2: document.getElementById('talent2').value.trim(),
+        stress: clamp(Number(document.getElementById('stress').value), 0, 6),
+        spotlight: Math.max(0, Number(document.getElementById('spotlight').value) || 0),
+        gear: document.getElementById('gear').value.trim()
+      };
+      document.getElementById('stress').value = data.stress;
+      document.getElementById('spotlight').value = data.spotlight;
+      localStorage.setItem(storageKeys.character, JSON.stringify(data));
+      appendLog(`角色卡已保存：${data.name || '未命名旅者'}`);
+    }
+
+    function loadCharacter() {
+      const raw = localStorage.getItem(storageKeys.character);
+      if (!raw) return alert('没有存档。');
+      const data = JSON.parse(raw);
+      document.getElementById('name').value = data.name || '';
+      document.getElementById('origin').value = data.origin || '';
+      document.getElementById('str').value = data.str ?? 0;
+      document.getElementById('dex').value = data.dex ?? 0;
+      document.getElementById('int').value = data.int ?? 0;
+      document.getElementById('cha').value = data.cha ?? 0;
+      document.getElementById('talent1').value = data.talent1 || '';
+      document.getElementById('talent2').value = data.talent2 || '';
+      document.getElementById('stress').value = data.stress ?? 0;
+      document.getElementById('spotlight').value = data.spotlight ?? 0;
+      document.getElementById('gear').value = data.gear || '';
+      appendLog('已载入角色卡。');
+    }
+
+    function exportCharacter() {
+      const data = {
+        name: document.getElementById('name').value.trim(),
+        origin: document.getElementById('origin').value,
+        str: document.getElementById('str').value,
+        dex: document.getElementById('dex').value,
+        int: document.getElementById('int').value,
+        cha: document.getElementById('cha').value,
+        talent1: document.getElementById('talent1').value.trim(),
+        talent2: document.getElementById('talent2').value.trim(),
+        stress: document.getElementById('stress').value,
+        spotlight: document.getElementById('spotlight').value,
+        gear: document.getElementById('gear').value.trim()
+      };
+      const text = `【角色卡】\n姓名：${data.name}\n出身/阵营：${data.origin}\n属性：力${data.str} / 敏${data.dex} / 智${data.int} / 魅${data.cha}\n特长：${data.talent1}；${data.talent2}\nStress：${data.stress} | Spotlight：${data.spotlight}\n装备：\n${data.gear}`;
+      copyToClipboard(text, '角色卡文本已复制。');
+    }
+
+    function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+
+    let lastRollData = null;
+
+    function rollDice(reroll = false) {
+      const attrKey = document.getElementById('attrSelect').value;
+      const attrValue = Number(document.getElementById(attrKey).value) || 0;
+      const mod = Number(document.getElementById('modifier').value) || 0;
+
+      let d1 = Math.ceil(Math.random() * 6);
+      let d2 = Math.ceil(Math.random() * 6);
+
+      if (reroll && lastRollData) {
+        const { d1: prev1, d2: prev2 } = lastRollData;
+        const lowerDie = prev1 <= prev2 ? 'd1' : 'd2';
+        if (lowerDie === 'd1') {
+          d1 = Math.ceil(Math.random() * 6);
+          d2 = prev2;
+        } else {
+          d1 = prev1;
+          d2 = Math.ceil(Math.random() * 6);
+        }
+      }
+
+      const total = d1 + d2 + attrValue + mod;
+      let outcome = '';
+      if (total >= 10) {
+        outcome = '10+ 成功且有优势';
+      } else if (total >= 7) {
+        outcome = '7-9 成功但付代价';
+      } else {
+        outcome = '6- 失败 / 局势变差 (Spotlight +1)';
+        adjustSpotlight(1, false);
+      }
+
+      lastRollData = { d1, d2, attrKey, attrValue, mod, total };
+      localStorage.setItem(storageKeys.lastRoll, JSON.stringify(lastRollData));
+
+      const resultText = `掷骰：d1=${d1}, d2=${d2}, 属性(${attrKey})=${attrValue}, 修正=${mod}\n总计：${total} → ${outcome}`;
+      document.getElementById('diceResult').textContent = resultText;
+      appendLog(reroll ? `花费 1 Spotlight 重掷 => ${resultText}` : resultText);
+    }
+
+    function rerollOneDie() {
+      const spotlightInput = document.getElementById('spotlight');
+      const current = Number(spotlightInput.value) || 0;
+      if (!lastRollData) return alert('还没有可重掷的记录。');
+      if (current < 1) return alert('Spotlight 不足。');
+      spotlightInput.value = current - 1;
+      saveCharacter();
+      rollDice(true);
+    }
+
+    function adjustSpotlight(delta, log = true) {
+      const spotlightInput = document.getElementById('spotlight');
+      const next = Math.max(0, Number(spotlightInput.value) + delta);
+      spotlightInput.value = next;
+      if (log) appendLog(`Spotlight 变化：${delta > 0 ? '+' : ''}${delta} → ${next}`);
+      saveCharacter();
+    }
+
+    function saveTravel() {
+      const data = {
+        chapter: document.getElementById('chapter').value.trim(),
+        weather: document.getElementById('weather').value,
+        travelLog: document.getElementById('travelLog').value.trim()
+      };
+      localStorage.setItem(storageKeys.travel, JSON.stringify(data));
+      appendLog('旅途笔记已保存。');
+    }
+
+    function loadTravel() {
+      const raw = localStorage.getItem(storageKeys.travel);
+      if (!raw) return alert('没有旅途存档。');
+      const data = JSON.parse(raw);
+      document.getElementById('chapter').value = data.chapter || '';
+      document.getElementById('weather').value = data.weather || '晨雾微光';
+      document.getElementById('travelLog').value = data.travelLog || '';
+      appendLog('已载入旅途笔记。');
+    }
+
+    function exportTravel() {
+      const text = `【旅途】\n章节：${document.getElementById('chapter').value}\n氛围：${document.getElementById('weather').value}\n日志：\n${document.getElementById('travelLog').value}`;
+      copyToClipboard(text, '旅途日志已复制。');
+    }
+
+    function generateEncounter() {
+      const pick = encounterPool[Math.floor(Math.random() * encounterPool.length)];
+      const logBox = document.getElementById('travelLog');
+      logBox.value += (logBox.value ? '\n' : '') + `- ${pick}`;
+      appendLog(`旅途碎片遭遇：${pick}`);
+      saveTravel();
+    }
+
+    function saveGM() {
+      const data = {
+        clock1: clamp(Number(document.getElementById('clock1').value) || 0, 0, 4),
+        clock2: clamp(Number(document.getElementById('clock2').value) || 0, 0, 4),
+        notes: document.getElementById('gmNotes').value.trim()
+      };
+      document.getElementById('clock1').value = data.clock1;
+      document.getElementById('clock2').value = data.clock2;
+      localStorage.setItem(storageKeys.gm, JSON.stringify(data));
+    }
+
+    function loadGM() {
+      const raw = localStorage.getItem(storageKeys.gm);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      document.getElementById('clock1').value = data.clock1 ?? 0;
+      document.getElementById('clock2').value = data.clock2 ?? 0;
+      document.getElementById('gmNotes').value = data.notes || '';
+    }
+
+    function bumpClock(id) {
+      const el = document.getElementById(id);
+      const next = clamp((Number(el.value) || 0) + 1, 0, 4);
+      el.value = next;
+      saveGM();
+      const message = `${id.toUpperCase()} 现在为 ${next}${next === 4 ? ' —— 重大变化触发' : ''}`;
+      appendLog(message);
+    }
+
+    function resetClock(id) {
+      document.getElementById(id).value = 0;
+      saveGM();
+      appendLog(`${id.toUpperCase()} 已重置。`);
+    }
+
+    function restoreLastRoll() {
+      const raw = localStorage.getItem(storageKeys.lastRoll);
+      if (!raw) return;
+      lastRollData = JSON.parse(raw);
+      const { d1, d2, attrKey, attrValue, mod, total } = lastRollData;
+      document.getElementById('attrSelect').value = attrKey;
+      document.getElementById('modifier').value = mod;
+      document.getElementById('diceResult').textContent = `上次掷骰：d1=${d1}, d2=${d2}, 属性(${attrKey})=${attrValue}, 修正=${mod}, 总计=${total}`;
+    }
+
+    function copyLog() {
+      const logs = getLogs();
+      if (!logs.length) return alert('暂无记录。');
+      copyToClipboard(logs.join('\n'), '记录已复制。');
+    }
+
+    function bind() {
+      document.getElementById('saveCharacter').addEventListener('click', saveCharacter);
+      document.getElementById('loadCharacter').addEventListener('click', loadCharacter);
+      document.getElementById('exportCharacter').addEventListener('click', exportCharacter);
+      document.getElementById('roll').addEventListener('click', () => rollDice(false));
+      document.getElementById('reroll').addEventListener('click', rerollOneDie);
+      document.getElementById('saveTravel').addEventListener('click', saveTravel);
+      document.getElementById('loadTravel').addEventListener('click', loadTravel);
+      document.getElementById('exportTravel').addEventListener('click', exportTravel);
+      document.getElementById('generateEncounter').addEventListener('click', generateEncounter);
+      document.querySelectorAll('button[data-clock]').forEach(btn => btn.addEventListener('click', () => bumpClock(btn.dataset.clock)));
+      document.querySelectorAll('button[data-reset]').forEach(btn => btn.addEventListener('click', () => resetClock(btn.dataset.reset)));
+      document.getElementById('gmNotes').addEventListener('input', saveGM);
+      document.getElementById('clock1').addEventListener('change', saveGM);
+      document.getElementById('clock2').addEventListener('change', saveGM);
+      document.getElementById('copyLog').addEventListener('click', copyLog);
+    }
+
+    function init() {
+      bind();
+      loadCharacter();
+      loadTravel();
+      loadGM();
+      renderLog();
+      restoreLastRoll();
+    }
+
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
