@@ -1,0 +1,13 @@
+export type IELTSWordTopic = 'Education'|'Environment'|'Technology'|'Society'|'Economy'|'Health'|'Culture'|'Government'|'Urbanization'|'Globalization'|'Writing'|'Reading'|'General Academic';
+export type WordEntry={id:string;word:string;pos:string;meaning_cn:string;definition_en:string;example:string;example_cn:string;synonyms:string[];antonyms?:string[];topic:IELTSWordTopic;difficulty:1|2|3|4|5;frequency_rank?:number;source:string[];license_note:string;example_source:'generated_original'|'open_source'|'manual';needs_review?:boolean;needs_cn_review?:boolean};
+export type QuestionType='meaning'|'recall'|'context'|'spelling'|'synonym';
+export type WordProgressStatus='new'|'learning'|'familiar'|'mastered'|'weak';
+export type WordProgress={wordId:string;status:WordProgressStatus;mastery:number;timesSeen:number;timesCorrect:number;wrongCount:number;streakCorrect:number;lastSeen?:string;nextReview?:string;questionStats:Record<QuestionType,{seen:number;correct:number}>};
+export type Question={id:string;wordId:string;type:QuestionType;prompt:string;options?:string[];answer:string;meta?:Record<string,string>};
+export type AnswerResult={correct:boolean;correctAnswer:string;xpGained:number;masteryDelta:number;feedback:string};
+export type SessionRecord={id:string;date:string;mode:'daily'|'shadow'|'trial';total:number;correct:number;xp:number;questionTypeStats:Record<QuestionType,{seen:number;correct:number}>};
+export type RoundSummary={round:number;total:number;correct:number;accuracy:number;d20:number;proficiency:number;rollTotal:number;title:string;bonusXp:number};
+export type TrialResult={trialId:number;date:string;passed:boolean;accuracy:number;xp:number;titleAwarded?:string};
+export type Title={id:string;name:string;description:string;earnedAt:string};
+export type UserProfile={name:string;className:string;xp:number;streak:number;lastStudyDate?:string;attributes:Record<'lexicon'|'recall'|'spelling'|'context'|'paraphrase'|'endurance',number>};
+export type AppState={userProfile:UserProfile;wordProgress:Record<string,WordProgress>;sessionHistory:SessionRecord[];titles:Title[];trialHistory:TrialResult[];settings:{dailyReview:number;dailyNew:number;dailyShadowMax:number};};

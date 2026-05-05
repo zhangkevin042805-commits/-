@@ -1,0 +1,7 @@
+import fs from 'node:fs';import path from 'node:path';
+const rawDir='data/raw';const out='data/processed/cleaned_ielts_words.json';const report='data/processed/wordbank_report.json';
+const files=fs.readdirSync(rawDir).filter(f=>f!=='.gitkeep');if(!files.length){console.log('No raw files found in data/raw. Skip build.');process.exit(0)}
+const words=new Map<string,any>();for(const f of files){const txt=fs.readFileSync(path.join(rawDir,f),'utf8');for(const line of txt.split(/\r?\n/)){const w=line.trim().toLowerCase();if(!/^[a-z-]{3,}$/.test(w))continue;if(!words.has(w))words.set(w,{id:w,word:w,pos:'',meaning_cn:'',definition_en:'',example:`In IELTS practice, students discuss ${w} in formal contexts.`,example_cn:`在雅思练习中，学生会在正式语境中讨论 ${w}。`,synonyms:[],topic:'General Academic',difficulty:3,source:[f],license_note:'Check upstream license',example_source:'generated_original',needs_review:true,needs_cn_review:true});else words.get(w).source.push(f)}}
+const arr=[...words.values()];fs.writeFileSync(out,JSON.stringify(arr,null,2));
+const rep={total_words:arr.length,words_with_cn_meaning:0,words_with_definition:0,words_with_examples:arr.length,words_with_synonyms:0,source_coverage:Object.fromEntries(files.map(f=>[f,arr.filter(x=>x.source.includes(f)).length])),topic_coverage:{'General Academic':arr.length},difficulty_distribution:{'3':arr.length},needs_review_count:arr.length,license_notes:['Verify each dataset license manually']};
+fs.writeFileSync(report,JSON.stringify(rep,null,2));console.log('Built',arr.length,'words');
