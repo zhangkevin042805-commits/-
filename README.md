@@ -1,31 +1,42 @@
-# Wayfarer's Chronicle
+# IELTS Arcane Sheet
 
-一个可离线运行的“在线跑团工具”静态站点，聚焦后勇者时代的旅途与记忆魔法氛围。全部功能基于浏览器与 localStorage，无需外部依赖，可直接部署到 GitHub Pages。
+本地可运行的雅思/学术词汇轻游戏学习工具（Vite + React + TS + Tailwind）。内置 300+ demo 词库离线可用；可通过脚本从 GitHub 开源词表构建更完整词库。
 
-## 功能概览
-- 角色卡：记录出身/阵营、四属性、特长、Stress、Spotlight、装备，支持保存/载入/导出文本。
-- 掷骰：2d6 + 选择属性 + 修正，自动判档；6- 时自动 Spotlight +1；可花 1 Spotlight 重掷一颗骰子。
-- 旅途/章节：章节标题、天气氛围、日志；可随机生成“旅途碎片遭遇”，并追加到日志；支持保存/载入/导出。
-- GM 时钟：两个 0–4 时钟，推进与重置按钮；到 4 时提示“重大变化触发”；含 GM 密记。
-- 记录区：掷骰、重掷、遭遇生成、时钟推进都会写入带时间戳的 log，可一键复制。
+## 功能
+- Daily Session、Shadow Words、Trial、Wordbook、Stats、角色卡成长
+- 每 10 题 D20 Round Feedback（仅反馈，不影响记忆判定）
+- localStorage 持久化：userProfile、wordProgress、sessionHistory、titles、trialHistory、streak 等
+- 词库质量检查：`validateWordBank`
 
-## 本地使用
-1. 克隆或下载仓库后，直接双击 `index.html` 即可在离线模式下使用。
-2. 如需本地静态服务器，运行 `python -m http.server 8000` 后访问 `http://localhost:8000`。
+## 运行
+```bash
+npm install
+npm run dev
+```
 
-## 部署到 GitHub Pages
-1. 将 `index.html`（以及本 README）提交到仓库的 `main` 分支根目录。
-2. 打开仓库 **Settings → Pages**，在 **Source** 选择 “Deploy from a branch”。
-3. Branch 选择 `main`，Directory 选择 `/ (root)`，保存设置。
-4. 几分钟后访问 `https://<username>.github.io/<repo>/` 即可上线。
+## 词库来源建议（需自行核验许可证）
+1. lpmi-13/machine_readable_wordlists（CC0-1.0，优先）
+2. globalwordnet/english-wordnet（CC-BY 4.0）
+3. aparrish/wordfreq-en-25000（CC BY-SA 4.0）
+4. lzrk/nglsh IELTS-4000（需自行确认）
+5. fanhongtao/IELTS（需自行确认）
+6. surajk95/wordsta（组织参考）
 
-## 推荐玩法流程
-- 使用语音平台同步叙事；把掷骰结果和 log 复制粘贴到群聊，确保所有玩家可见。
-- 在旅途中可随时生成“旅途碎片遭遇”并记录到日志，GM 时钟到 4 时提示重大事件触发。
-- 角色的 Spotlight 会在 6- 时自动累积；需要反转局势时可以花 1 Spotlight 重掷一颗骰子，系统会扣减并记录。
+> 默认 demo 词库仅用于学习演示。构建完整词库前，请自行确认数据源 license。严禁复制商业词典例句。原创例句标记 `example_source: "generated_original"`。
 
-## 自检建议
-- 打开 `index.html`，录入角色并保存，刷新后载入确认存在。
-- 进行一次 2d6 掷骰，出现 6- 时应自动 Spotlight +1；随后点击“花 1 Spotlight：重掷一颗”完成重掷并记录。
-- 在旅途面板生成一次遭遇，确认日志追加；推进 GM 时钟到 4 看到“重大变化触发”。
-- 使用导出/复制按钮，将角色卡与记录区内容复制到剪贴板，确保可粘贴分享。
+## 导入原始词表
+- 将 raw 文件放入 `data/raw/`
+- 运行：
+```bash
+npm run build:wordbank
+npm run validate:wordbank
+```
+输出：
+- `data/processed/cleaned_ielts_words.json`
+- `data/processed/wordbank_report.json`
+
+## 为什么不复制商业词典例句
+避免版权风险；本项目仅使用原创或可追溯开源文本。
+
+## 为什么 D20 只做反馈
+D20 只提供阶段激励与文案反馈，避免掷骰干扰真实记忆曲线与复习间隔。
